@@ -1,4 +1,4 @@
-use engine::{Data};
+use engine::Data;
 
 pub mod engine;
 
@@ -15,11 +15,8 @@ pub fn compress(path: &str, buf: &[u8]) {
     println!("COUNT: {}", chars_count);
     let mut i = 0;
     for c in chars {
-        //println!("CHAR: {}", c);
-        
         if c != ' ' {
             if sep_count > 1 {
-                println!("SEPEPPEEPPEEP");
                 data.add_separator(sep_count);
                 sep_count = 0;
             }
@@ -28,7 +25,6 @@ pub fn compress(path: &str, buf: &[u8]) {
 
             if i == chars_count - 1 {
                 let part = String::from_utf16(token.as_slice()).unwrap();
-                println!("FINAL PART: {}", part);
                 data.add_element(&part);
                 token.clear();
                 sep_count = 0;
@@ -49,15 +45,14 @@ pub fn compress(path: &str, buf: &[u8]) {
     }
 
     println!("Original length: {}", buf.len());
-    let encoded = data.compress();
+    let encoded = data.to_bytes();
     println!("Compress length: {}", encoded.len());
 
     std::fs::write(path, encoded).unwrap();
-
 }
 
-pub fn decompress(buf: &[u8]) -> String {
-    let data: Data = bincode::deserialize(buf).unwrap();
+pub fn decompress(bytes: &[u8]) -> String {
+    let data: Data = Data::from_bytes(bytes);
     return data.decompress();
 }
 
