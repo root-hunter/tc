@@ -1,5 +1,10 @@
 use rustc_hash::FxHashMap;
 
+const DATA_EXPORT_U8: u8 = 0x0000;
+const DATA_EXPORT_U16: u8 = 0x0001;
+const DATA_EXPORT_U32: u8 = 0x0002;
+const DATA_EXPORT_USIZE: u8 = 0x0003;
+
 trait AllowedExportTypes {}
 
 impl AllowedExportTypes for u8 {}
@@ -314,14 +319,28 @@ impl Data {
     pub fn from_bytes(bytes: &[u8]) -> Data {
         let prefix = *bytes.get(0).unwrap();
 
-        if prefix == 0 {
-            return DataExport::<u8>::from_bytes(&bytes[1..]).to_data();
-        } else if prefix == 1 {
-            return DataExport::<u16>::from_bytes(&bytes[1..]).to_data();
-        } else if prefix == 2 {
-            return DataExport::<u32>::from_bytes(&bytes[1..]).to_data();
-        } else if prefix == 3 {
-            return DataExport::<usize>::from_bytes(&bytes[1..]).to_data();
+        if [DATA_EXPORT_U8, DATA_EXPORT_U16, DATA_EXPORT_U32, DATA_EXPORT_USIZE].contains(&prefix) {
+            let bytes = &bytes[1..];
+
+            if prefix == DATA_EXPORT_U8 {
+                println!("DECOMPRESS WITH U8");
+    
+                return DataExport::<u8>::from_bytes(bytes).to_data();
+            } else if prefix == DATA_EXPORT_U16 {
+                println!("DECOMPRESS WITH U16");
+    
+                return DataExport::<u16>::from_bytes(bytes).to_data();
+            } else if prefix == DATA_EXPORT_U32 {
+                println!("DECOMPRESS WITH U32");
+    
+                return DataExport::<u32>::from_bytes(bytes).to_data();
+            } else if prefix == DATA_EXPORT_USIZE {
+                println!("DECOMPRESS WITH USIZE");
+    
+                return DataExport::<usize>::from_bytes(bytes).to_data();
+            } else {
+                panic!("Not valid prefix in file!");
+            }
         } else {
             panic!("Not valid prefix in file!");
         }
@@ -333,35 +352,36 @@ impl Data {
 
         if self.length < u8::MAX as usize {
             println!("COMPRESS WITH U8: {} < {}", self.length, u8::MAX);
-            let mut prefix = Vec::<u8>::from([0]);
-            let data = DataExport::<u8>::from_data(self);
-            let bytes = bincode::serialize(&data).unwrap();
 
-            prefix.extend(bytes);
-            return prefix;
+            let mut bytes = Vec::<u8>::from([DATA_EXPORT_U8]);
+            let data = DataExport::<u8>::from_data(self);
+            bytes.extend(data.to_bytes());
+
+            return bytes;
         } else if self.length < u16::MAX as usize {
             println!("COMPRESS WITH U16: {} < {}", self.length, u16::MAX);
-            let mut prefix = Vec::<u8>::from([1]);
+
+            let mut bytes = Vec::<u8>::from([DATA_EXPORT_U16]);
             let data = DataExport::<u16>::from_data(self);
-            let bytes = bincode::serialize(&data).unwrap();
-            prefix.extend(bytes);
-            return prefix;
+            bytes.extend(data.to_bytes());
+            
+            return bytes;
         } else if self.length < u32::MAX as usize {
             println!("COMPRESS WITH U32: {} < {}", self.length, u32::MAX);
 
-            let mut prefix = Vec::<u8>::from([2]);
+            let mut bytes = Vec::<u8>::from([DATA_EXPORT_U32]);
             let data = DataExport::<u32>::from_data(self);
-            let bytes = bincode::serialize(&data).unwrap();
-            prefix.extend(bytes);
-            return prefix;
+            bytes.extend(data.to_bytes());
+            
+            return bytes;
         } else {
             println!("COMPRESS WITH USIZE: {} < {}", self.length, usize::MAX);
 
-            let mut prefix = Vec::<u8>::from([3]);
+            let mut bytes = Vec::<u8>::from([DATA_EXPORT_USIZE]);
             let data = DataExport::<usize>::from_data(self);
-            let bytes = bincode::serialize(&data).unwrap();
-            prefix.extend(bytes);
-            return prefix;
+            bytes.extend(data.to_bytes());
+            
+            return bytes;
         };
     }
 
@@ -373,7 +393,6 @@ impl Data {
             if self.extra_separators.contains_key(&i) {
                 let value = self.extra_separators.get(&i).unwrap();
 
-                println!("AS USIZE: {}", *value as usize);
                 for _ in 0..(*value as usize - 1) {
                     data.push("".to_string());
                 }

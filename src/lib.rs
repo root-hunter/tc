@@ -59,30 +59,52 @@ pub fn decompress(bytes: &[u8]) -> String {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use std::fs::File;
+    use std::io::{self, Read};
+
+    fn are_files_equal(file1: &str, file2: &str) -> std::io::Result<bool> {
+        let mut file1 = File::open(file1)?;
+        let mut file2 = File::open(file2)?;
+    
+        let mut file1_contents = Vec::new();
+        let mut file2_contents = Vec::new();
+    
+        // Read the contents of both files into byte vectors
+        file1.read_to_end(&mut file1_contents).unwrap();
+        file2.read_to_end(&mut file2_contents).unwrap();
+    
+        // Compare the contents byte by byte
+        Ok(file1_contents == file2_contents)
+    }
 
     #[test]
     fn decompress_1() {
-        let test_path = "/home/roothunter/Dev/ran/files/text_1.txt";
-        let compress_path = "/home/roothunter/Dev/ran/files/compress_2.ran";
-        let decompress_path = "/home/roothunter/Dev/ran/files/decompress_2.ran";
+        let original_path = "/home/roothunter/Dev/ran/files/text_1.txt";
+        let compressed_path = "/home/roothunter/Dev/ran/files/compress_2.ran";
+        let decompressed_path = "/home/roothunter/Dev/ran/files/decompress_2.ran";
         
-        let test = std::fs::read(test_path).unwrap();
-        compress(compress_path, test.as_slice());
+        let test = std::fs::read(original_path).unwrap();
+        compress(compressed_path, test.as_slice());
 
-        let compress_data = std::fs::read(compress_path).unwrap();
+        let compress_data = std::fs::read(compressed_path).unwrap();
         let compress_data = compress_data.as_slice();
 
         let decompressed = decompress(&compress_data);
 
-        std::fs::write(decompress_path, decompressed).unwrap();
+        std::fs::write(decompressed_path, decompressed).unwrap();
+
+        assert!(are_files_equal(original_path, decompressed_path).unwrap());
     }
 
     #[test]
     fn compress_1() {
         let test_path = "/home/roothunter/Dev/ran/files/text_1.txt";
-        let compress_path = "/home/roothunter/Dev/ran/files/compress_1.ran";
+        let compressed_path = "/home/roothunter/Dev/ran/files/compress_1.ran";
         
         let test = std::fs::read(test_path).unwrap();
-        compress(compress_path, test.as_slice());
+        compress(compressed_path, test.as_slice());
+
+        let compressed = std::fs::read(compressed_path).unwrap();
+        assert!(compressed.len() < test.len());
     }
 }
