@@ -19,6 +19,7 @@ pub fn compress(path: &str, buf: &[u8]) {
         
         if c != ' ' {
             if sep_count > 1 {
+                println!("SEPEPPEEPPEEP");
                 data.add_separator(sep_count);
                 sep_count = 0;
             }
