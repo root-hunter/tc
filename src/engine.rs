@@ -17,6 +17,9 @@ impl Data
     pub fn add_element(&mut self, s: &String) {
         let index = self.length as u32;
 
+        if index > 128 {
+            println!("TOKEN: {}", s);
+        }
         if self.tokens.contains_key(s) {
             let elem = self.tokens.get_mut(s).unwrap();
             elem.push(index);
@@ -59,7 +62,7 @@ impl Data
         }
 
         println!("TOKENS: {}", self.length);
-        //println!("DECOMPRESS DATA: {:?}", self);
+        println!("DECOMPRESS DATA: {:?}", self);
         return data.join(" ");
     }
 }

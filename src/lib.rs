@@ -9,7 +9,14 @@ pub fn compress(path: &str, buf: &[u8]) {
     let mut token = Vec::<u16>::new();
     let mut sep_count = 0;
 
-    for c in str.chars() {
+    let chars = str.chars();
+    let chars_count = chars.clone().count();
+
+    println!("COUNT: {}", chars_count);
+    let mut i = 0;
+    for c in chars {
+        //println!("CHAR: {}", c);
+        
         if c != ' ' {
             if sep_count > 1 {
                 data.add_separator(sep_count);
@@ -17,15 +24,27 @@ pub fn compress(path: &str, buf: &[u8]) {
             }
             
             token.push(c as u16);
-        } else {
+
+            if i == chars_count - 1 {
+                let part = String::from_utf16(token.as_slice()).unwrap();
+                println!("FINAL PART: {}", part);
+                data.add_element(&part);
+                token.clear();
+                sep_count = 0;
+            }
+        } else if c == ' ' {
             if token.len() > 0 {
                 let part = String::from_utf16(token.as_slice()).unwrap();
+                //println!("PART: {}", part);
+
                 data.add_element(&part);
                 token.clear();
                 sep_count = 0;
             }
             sep_count += 1;
         }
+
+        i += 1;
     }
 
     println!("Original length: {}", buf.len());
