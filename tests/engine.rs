@@ -35,7 +35,7 @@ mod tests {
     #[test]
     fn test_1() {
         let test_path = "./files/input_1.txt";
-        let compressed_path = "./files/compress_1.ran";
+        let compressed_path = "./files/compress_1.tc";
         
         let test = std::fs::read(test_path).unwrap();
         tc::compress(compressed_path, test.as_slice());
@@ -47,32 +47,32 @@ mod tests {
     #[test]
     fn test_2() {
         let original_path = "./files/input_1.txt";
-        let compressed_path = "./files/compress_2.ran";
-        let decompressed_path = "./files/decompress_2.ran";
+        let compressed_path = "./files/compress_2.tc";
+        let decompressed_path = "./files/decompress_2.tc";
         test_file(original_path, compressed_path, decompressed_path);
     }
 
     #[test]
     fn test_3() {
         let original_path = "./files/input_2.txt";
-        let compressed_path = "./files/compress_3.ran";
-        let decompressed_path = "./files/decompress_3.ran";
+        let compressed_path = "./files/compress_3.tc";
+        let decompressed_path = "./files/decompress_3.tc";
         test_file(original_path, compressed_path, decompressed_path);
     }
 
     #[test]
     fn test_4() {
          let original_path = "./files/input_3.txt";
-         let compressed_path = "./files/compress_4.ran";
-         let decompressed_path = "./files/decompress_4.ran";
+         let compressed_path = "./files/compress_4.tc";
+         let decompressed_path = "./files/decompress_4.tc";
          test_file(original_path, compressed_path, decompressed_path);
     }
 
     #[test]
     fn test_5() {
         let original_path = "./files/input_4.txt";
-        let compressed_path = "./files/compress_5.ran";
-        let decompressed_path = "./files/decompress_5.ran";
+        let compressed_path = "./files/compress_5.tc";
+        let decompressed_path = "./files/decompress_5.tc";
         test_file(original_path, compressed_path, decompressed_path);
     }
 
@@ -80,8 +80,8 @@ mod tests {
     #[test]
     fn test_6() {
         let original_path = "./files/input_5.txt";
-        let compressed_path = "./files/compress_6.ran";
-        let decompressed_path = "./files/decompress_6.ran";
+        let compressed_path = "./files/compress_6.tc";
+        let decompressed_path = "./files/decompress_6.tc";
         test_file(original_path, compressed_path, decompressed_path);
     }
 
