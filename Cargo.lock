@@ -30,15 +30,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "ran"
-version = "0.1.0"
-dependencies = [
- "bincode",
- "rustc-hash",
- "serde",
-]
-
-[[package]]
 name = "rustc-hash"
 version = "2.0.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -73,6 +64,15 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
+]
+
+[[package]]
+name = "tc"
+version = "0.2.0"
+dependencies = [
+ "bincode",
+ "rustc-hash",
+ "serde",
 ]
 
 [[package]]

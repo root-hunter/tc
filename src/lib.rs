@@ -2,6 +2,8 @@ use engine::Data;
 
 pub mod engine;
 
+const SEPARATOR: char = ' ';
+
 pub fn compress(path: &str, buf: &[u8]) {
     let mut data = Data::new();
     let str = std::str::from_utf8(buf).unwrap();
@@ -15,7 +17,7 @@ pub fn compress(path: &str, buf: &[u8]) {
     println!("COUNT: {}", chars_count);
     let mut i = 0;
     for c in chars {
-        if c != ' ' {
+        if c != SEPARATOR {
             if sep_count > 1 {
                 data.add_separator(sep_count);
                 sep_count = 0;
@@ -29,7 +31,7 @@ pub fn compress(path: &str, buf: &[u8]) {
                 token.clear();
                 sep_count = 0;
             }
-        } else if c == ' ' {
+        } else if c == SEPARATOR {
             if token.len() > 0 {
                 let part = token.clone().into_iter().collect();
                 //println!("PART: {}", part);

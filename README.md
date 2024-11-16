@@ -1,4 +1,4 @@
-# ran - Rust Archive Node
+# tc - Text Compressor
 
 ### Data Binary Structure
 ```rust

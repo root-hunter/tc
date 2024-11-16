@@ -20,12 +20,12 @@ mod tests {
 
     fn test_file(original_path: &str, compressed_path: &str, decompressed_path: &str) {
         let test = std::fs::read(original_path).unwrap();
-        ran::compress(compressed_path, test.as_slice());
+        tc::compress(compressed_path, test.as_slice());
 
         let compress_data = std::fs::read(compressed_path).unwrap();
         let compress_data = compress_data.as_slice();
 
-        let decompressed = ran::decompress(&compress_data);
+        let decompressed = tc::decompress(&compress_data);
 
         std::fs::write(decompressed_path, decompressed).unwrap();
 
@@ -34,11 +34,11 @@ mod tests {
 
     #[test]
     fn test_1() {
-        let test_path = "/home/roothunter/Dev/ran/files/input_1.txt";
-        let compressed_path = "/home/roothunter/Dev/ran/files/compress_1.ran";
+        let test_path = "./files/input_1.txt";
+        let compressed_path = "./files/compress_1.ran";
         
         let test = std::fs::read(test_path).unwrap();
-        ran::compress(compressed_path, test.as_slice());
+        tc::compress(compressed_path, test.as_slice());
 
         let compressed = std::fs::read(compressed_path).unwrap();
         assert!(compressed.len() < test.len());
@@ -46,42 +46,42 @@ mod tests {
 
     #[test]
     fn test_2() {
-        let original_path = "/home/roothunter/Dev/ran/files/input_1.txt";
-        let compressed_path = "/home/roothunter/Dev/ran/files/compress_2.ran";
-        let decompressed_path = "/home/roothunter/Dev/ran/files/decompress_2.ran";
+        let original_path = "./files/input_1.txt";
+        let compressed_path = "./files/compress_2.ran";
+        let decompressed_path = "./files/decompress_2.ran";
         test_file(original_path, compressed_path, decompressed_path);
     }
 
     #[test]
     fn test_3() {
-        let original_path = "/home/roothunter/Dev/ran/files/input_2.txt";
-        let compressed_path = "/home/roothunter/Dev/ran/files/compress_3.ran";
-        let decompressed_path = "/home/roothunter/Dev/ran/files/decompress_3.ran";
+        let original_path = "./files/input_2.txt";
+        let compressed_path = "./files/compress_3.ran";
+        let decompressed_path = "./files/decompress_3.ran";
         test_file(original_path, compressed_path, decompressed_path);
     }
 
     #[test]
     fn test_4() {
-         let original_path = "/home/roothunter/Dev/ran/files/input_3.txt";
-         let compressed_path = "/home/roothunter/Dev/ran/files/compress_4.ran";
-         let decompressed_path = "/home/roothunter/Dev/ran/files/decompress_4.ran";
+         let original_path = "./files/input_3.txt";
+         let compressed_path = "./files/compress_4.ran";
+         let decompressed_path = "./files/decompress_4.ran";
          test_file(original_path, compressed_path, decompressed_path);
     }
 
     #[test]
     fn test_5() {
-        let original_path = "/home/roothunter/Dev/ran/files/input_4.txt";
-        let compressed_path = "/home/roothunter/Dev/ran/files/compress_5.ran";
-        let decompressed_path = "/home/roothunter/Dev/ran/files/decompress_5.ran";
+        let original_path = "./files/input_4.txt";
+        let compressed_path = "./files/compress_5.ran";
+        let decompressed_path = "./files/decompress_5.ran";
         test_file(original_path, compressed_path, decompressed_path);
     }
 
 
     #[test]
     fn test_6() {
-        let original_path = "/home/roothunter/Dev/ran/files/input_5.txt";
-        let compressed_path = "/home/roothunter/Dev/ran/files/compress_6.ran";
-        let decompressed_path = "/home/roothunter/Dev/ran/files/decompress_6.ran";
+        let original_path = "./files/input_5.txt";
+        let compressed_path = "./files/compress_6.ran";
+        let decompressed_path = "./files/decompress_6.ran";
         test_file(original_path, compressed_path, decompressed_path);
     }
 
