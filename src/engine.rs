@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use rustc_hash::FxHashMap;
 
 enum Error {
     CantAddElement
@@ -13,7 +13,7 @@ where
     T: EngineAllowedTypes + serde::Deserialize<'static> + std::cmp::Eq + std::hash::Hash,
 {
     fn new(size: usize) -> Data<T> {
-        return Data { size, dict: HashMap::<T, Vec<DataElement>>::new(), data_length: 0 };
+        return Data { size, dict: FxHashMap::<T, Vec<DataElement>>::default(), data_length: 0 };
     }
 
     fn from_slice_u8(buffer: &[T]) -> Self;
@@ -40,8 +40,6 @@ enum DataExportType {
     USIZE
 }
 
-use std::any::{Any, TypeId};
-
 pub trait ExportBehavior<T, D, E> 
 where 
     T: EngineAllowedTypes + std::cmp::Eq + std::hash::Hash,
@@ -62,7 +60,7 @@ where
     dict_type: DataExportType,
     elements_type: DataExportType,
     size: usize,
-    dict: HashMap<T, Vec<D>>,
+    dict: FxHashMap<T, Vec<D>>,
     elements: Vec<E>
 }
 
@@ -116,17 +114,17 @@ where
 {
     pub size: usize,
     pub data_length: usize,
-    dict: HashMap<T, Vec<DataElement>>,
+    dict: FxHashMap<T, Vec<DataElement>>,
 }
 
 impl Engine<u8> for Data<u8>
  {
     fn from_slice_u8(buffer: &[u8]) -> Self {
-        return Data { size: buffer.len(), dict: HashMap::new(), data_length: 0 };
+        return Data { size: buffer.len(), dict: FxHashMap::default(), data_length: 0 };
     }
 
     fn from_slice_vec(buffer: Vec<u8>) -> Self {
-        return Data { size: buffer.len(), dict: HashMap::new(), data_length: 0 };
+        return Data { size: buffer.len(), dict: FxHashMap::default(), data_length: 0 };
     }
 
     fn exists_elem_by_index(&mut self, key: u8, index: usize) -> bool {
@@ -137,7 +135,6 @@ impl Engine<u8> for Data<u8>
                 return true;
             }
         }
-
         return false;
     }
 
@@ -183,11 +180,11 @@ impl Engine<u8> for Data<u8>
 impl Engine<String> for Data<String>
  {
     fn from_slice_u8(buffer: &[String]) -> Self {
-        return Data { size: buffer.len(), dict: HashMap::new(), data_length: 0 };
+        return Data { size: buffer.len(), dict: FxHashMap::default(), data_length: 0 };
     }
 
     fn from_slice_vec(buffer: Vec<String>) -> Self {
-        return Data { size: buffer.len(), dict: HashMap::new(), data_length: 0 };
+        return Data { size: buffer.len(), dict: FxHashMap::default(), data_length: 0 };
     }
 
     fn add_element(&mut self, s: &String) {
