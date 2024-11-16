@@ -1,19 +1,20 @@
-use engine::Data;
+use engine::{Data, Engine};
 
 pub mod engine;
 
 pub fn compress(buf: &[u8]) {
-    let mut data = Data::new();
+    let mut data = Data::<String>::new(buf.len());
 
-    let str = std::str::from_utf8(buf).unwrap();
+    let str = std::str::from_utf8(buf).unwrap().split(' ');
     
-    for b in buf {
-        data.add_element(b);
+    for part in str {
+        let part = part.to_string();
+        data.add_element(&part);
     }
 
-    println!("{:?}", data);
-    let encoded = data.encode();
-    println!("({}) {:?}", encoded.len(), encoded);
+    println!("Original length: {}", data.size);
+    let encoded = data.to_bytes();
+    println!("Compress length: {}", encoded.len());
 }
 
 pub fn decompress(buf: &[u8]) {
@@ -26,7 +27,9 @@ mod tests {
 
     #[test]
     fn it_works() {
-        let buf = "Ciao mooooooooooooooondo!";
-        compress(buf.as_bytes());
+
+        let test_path = "/home/roothunter/Dev/ran/files/text1.txt";
+        let test = std::fs::read(test_path).unwrap();
+        compress(test.as_slice());
     }
 }
