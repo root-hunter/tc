@@ -385,7 +385,7 @@ impl Data {
         };
     }
 
-    pub fn decompress(self) -> String {
+    pub fn to_str(self) -> String {
         let mut data = Vec::<String>::new();
         data.reserve(self.length);
 

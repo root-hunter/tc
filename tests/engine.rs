@@ -61,17 +61,17 @@ mod tests {
         info!("Compressed path: {}", compressed_path);
         info!("Decompressed path: {}", decompressed_path);
 
-        let test = std::fs::read(original_path).unwrap();
-        tc::compress(compressed_path, test.as_slice());
-
-        let compressed_data = std::fs::read(compressed_path).unwrap();
-        let compressed_data = compressed_data.as_slice();
-
-        let decompressed = tc::decompress(&compressed_data);
-
-        std::fs::write(decompressed_path, decompressed).unwrap();
-
-        assert!(are_files_equal(original_path, decompressed_path).unwrap());
+        let compressed = tc::compress_file(original_path, compressed_path);
+        if compressed.is_ok() {
+            let decompressed = tc::decompress_file(compressed_path, decompressed_path);
+            if decompressed.is_ok() {
+                assert!(are_files_equal(original_path, decompressed_path).unwrap());
+            } else {
+                assert!(false);
+            }
+        } else {
+            assert!(false);
+        }
     }
 
     fn is_init() -> bool {
@@ -94,10 +94,10 @@ mod tests {
 
         info!("Start TEST 1");
 
+        tc::compress_file(test_path, compressed_path).unwrap();
         let test = std::fs::read(test_path).unwrap();
-        tc::compress(compressed_path, test.as_slice());
-
         let compressed = std::fs::read(compressed_path).unwrap();
+
         assert!(compressed.len() < test.len());
     }
 

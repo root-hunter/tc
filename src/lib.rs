@@ -6,8 +6,7 @@ use engine::data::Data;
 
 const SEPARATOR: char = ' ';
 
-pub fn compress(path: &str, buf: &[u8]) {
-    
+pub fn compress(buf: &[u8]) -> Data {
     let mut data = Data::new();
     let str = std::str::from_utf8(buf).unwrap();
     
@@ -49,14 +48,42 @@ pub fn compress(path: &str, buf: &[u8]) {
         i += 1;
     }
 
-    println!("Original length: {}", buf.len());
-    let encoded = data.to_bytes();
-    println!("Compress length: {}", encoded.len());
+    // println!("Original length: {}", buf.len());
+    // let encoded = data.to_bytes();
+    // println!("Compress length: {}", encoded.len());
 
-    std::fs::write(path, encoded).unwrap();
+    // std::fs::write(path, encoded).unwrap();
+    
+    return data;
 }
 
-pub fn decompress(bytes: &[u8]) -> String {
-    let data: Data = Data::from_bytes(bytes);
-    return data.decompress();
+pub fn compress_file(file_path: &str, output_path: &str) -> Result<(), ()>{
+    if let Ok(file_data) = std::fs::read(file_path){
+        let data = compress(file_data.as_slice());
+
+        if let Ok(_) = std::fs::write(output_path, data.to_bytes()) {
+            Ok(())
+        } else {
+            Err(())
+        }
+    } else {
+        Err(())
+    }
+}
+
+pub fn decompress(bytes: &[u8]) -> Data {
+    return Data::from_bytes(bytes);
+}
+
+pub fn decompress_file(file_path: &str, output_path: &str) -> Result<(), ()>{
+    if let Ok(file_data) = std::fs::read(file_path) {
+        let data = decompress(file_data.as_slice());
+        if let Ok(_) = std::fs::write(output_path, data.to_str()) {
+            Ok(())
+        } else {
+            Err(())
+        }      
+    } else {
+        Err(())
+    }
 }
