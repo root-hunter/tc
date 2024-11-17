@@ -16,7 +16,6 @@ pub fn compress(buf: &[u8]) -> Data {
     let chars = str.chars();
     let chars_count = chars.clone().count();
 
-    println!("COUNT: {}", chars_count);
     let mut i = 0;
     for c in chars {
         if c != SEPARATOR {
@@ -48,12 +47,6 @@ pub fn compress(buf: &[u8]) -> Data {
         i += 1;
     }
 
-    // println!("Original length: {}", buf.len());
-    // let encoded = data.to_bytes();
-    // println!("Compress length: {}", encoded.len());
-
-    // std::fs::write(path, encoded).unwrap();
-    
     return data;
 }
 
