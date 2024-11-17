@@ -901,7 +901,7 @@ struct rxq {
  * @pdev: pci device
  * @hdev: hdev device
  * @flags: driver state
- * @irq_lock: spinlock for MSI-X
+ * @irq_lock: spinl            ock for MSI-X
  * @hci_rx_lock: spinlock for HCI RX flow
  * @base_addr: pci base address (from BAR)
  * @msix_entries: array of MSI-X entries

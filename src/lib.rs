@@ -1,10 +1,13 @@
-use engine::Data;
+pub mod engine {
+    pub mod data;
+}
 
-pub mod engine;
+use engine::data::Data;
 
 const SEPARATOR: char = ' ';
 
 pub fn compress(path: &str, buf: &[u8]) {
+    
     let mut data = Data::new();
     let str = std::str::from_utf8(buf).unwrap();
     

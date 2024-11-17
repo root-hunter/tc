@@ -1,9 +1,9 @@
 use rustc_hash::FxHashMap;
 
-const DATA_EXPORT_U8: u8 = 0x0000;
-const DATA_EXPORT_U16: u8 = 0x0001;
-const DATA_EXPORT_U32: u8 = 0x0002;
-const DATA_EXPORT_USIZE: u8 = 0x0003;
+const DATA_EXPORT_U8: u8 = 0x00;
+const DATA_EXPORT_U16: u8 = 0x01;
+const DATA_EXPORT_U32: u8 = 0x02;
+const DATA_EXPORT_USIZE: u8 = 0x03;
 
 trait AllowedExportTypes {}
 
@@ -78,7 +78,7 @@ impl Export<u8> for DataExport<u8> {
         for (k, v) in self.extra_separators {
             extra_separators.insert(k, v as u16);
         }
-
+        
         return Data {
             length,
             tokens,

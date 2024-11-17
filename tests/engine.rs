@@ -1,6 +1,6 @@
 use chrono::Local;
 use env_logger::Builder;
-use log::{info, warn, LevelFilter};
+use log::{info, LevelFilter};
 use std::fs::File;
 use std::io::Write;
 
@@ -39,7 +39,7 @@ fn init_logger() {
 mod tests {
     use super::*;
     use std::fs::File;
-    use std::io::{self, Read};
+    use std::io::Read;
 
     use crate::init_logger;
 
@@ -50,11 +50,9 @@ mod tests {
         let mut file1_contents = Vec::new();
         let mut file2_contents = Vec::new();
 
-        // Read the contents of both files into byte vectors
         file1.read_to_end(&mut file1_contents).unwrap();
         file2.read_to_end(&mut file2_contents).unwrap();
 
-        // Compare the contents byte by byte
         Ok(file1_contents == file2_contents)
     }
 
