@@ -1,3 +1,3 @@
 /target
-/files/*.tc
+/tests/tmp/*.tc
 /tests/logs/*.log

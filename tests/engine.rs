@@ -43,14 +43,6 @@ mod tests {
 
     use crate::init_logger;
 
-    #[derive(serde::Serialize, serde::Deserialize, Debug, Clone)]
-    struct TestResult {
-        name: String,
-        timestamp: String,
-        passed: bool,
-        content: String,
-    }
-
     fn are_files_equal(file1: &str, file2: &str) -> std::io::Result<bool> {
         let mut file1 = File::open(file1)?;
         let mut file2 = File::open(file2)?;
@@ -74,10 +66,10 @@ mod tests {
         let test = std::fs::read(original_path).unwrap();
         tc::compress(compressed_path, test.as_slice());
 
-        let compress_data = std::fs::read(compressed_path).unwrap();
-        let compress_data = compress_data.as_slice();
+        let compressed_data = std::fs::read(compressed_path).unwrap();
+        let compressed_data = compressed_data.as_slice();
 
-        let decompressed = tc::decompress(&compress_data);
+        let decompressed = tc::decompress(&compressed_data);
 
         std::fs::write(decompressed_path, decompressed).unwrap();
 
@@ -99,8 +91,8 @@ mod tests {
     fn test_1() {
         init();
 
-        let test_path = "./files/input_1.txt";
-        let compressed_path = "./files/compress_1.tc";
+        let test_path = "./tests/inputs/input_1.txt";
+        let compressed_path = "./tests/tmp/compressed_1.tc";
 
         info!("Start TEST 1");
 
@@ -115,9 +107,9 @@ mod tests {
     fn test_2() {
         init();
 
-        let original_path = "./files/input_1.txt";
-        let compressed_path = "./files/compress_2.tc";
-        let decompressed_path = "./files/decompress_2.tc";
+        let original_path = "./tests/inputs/input_1.txt";
+        let compressed_path = "./tests/tmp/compressed_2.tc";
+        let decompressed_path = "./tests/tmp/decompressed_2.tc";
 
         info!("Start TEST 2");
 
@@ -128,9 +120,9 @@ mod tests {
     fn test_3() {
         init();
 
-        let original_path = "./files/input_2.txt";
-        let compressed_path = "./files/compress_3.tc";
-        let decompressed_path = "./files/decompress_3.tc";
+        let original_path = "./tests/inputs/input_2.txt";
+        let compressed_path = "./tests/tmp/compressed_3.tc";
+        let decompressed_path = "./tests/tmp/decompressed_3.tc";
 
         info!("Start TEST 3");
 
@@ -141,9 +133,9 @@ mod tests {
     fn test_4() {
         init();
 
-        let original_path = "./files/input_3.txt";
-        let compressed_path = "./files/compress_4.tc";
-        let decompressed_path = "./files/decompress_4.tc";
+        let original_path = "./tests/inputs/input_3.txt";
+        let compressed_path = "./tests/tmp/compressed_4.tc";
+        let decompressed_path = "./tests/tmp/decompressed_4.tc";
 
         info!("Start TEST 4");
 
@@ -154,9 +146,9 @@ mod tests {
     fn test_5() {
         init();
 
-        let original_path = "./files/input_4.txt";
-        let compressed_path = "./files/compress_5.tc";
-        let decompressed_path = "./files/decompress_5.tc";
+        let original_path = "./tests/inputs/input_4.txt";
+        let compressed_path = "./tests/tmp/compressed_5.tc";
+        let decompressed_path = "./tests/tmp/decompressed_5.tc";
 
         info!("Start TEST 5");
 
@@ -167,9 +159,9 @@ mod tests {
     fn test_6() {
         init();
 
-        let original_path = "./files/input_5.txt";
-        let compressed_path = "./files/compress_6.tc";
-        let decompressed_path = "./files/decompress_6.tc";
+        let original_path = "./tests/inputs/input_5.txt";
+        let compressed_path = "./tests/tmp/compressed_6.tc";
+        let decompressed_path = "./tests/tmp/decompressed_6.tc";
 
         info!("Start TEST 6");
 
