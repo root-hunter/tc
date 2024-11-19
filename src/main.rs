@@ -16,14 +16,8 @@ struct DataV2 {
     dict: BTreeMap<usize, Node>
 }
 
-fn build_dict(node: Node, dict: &mut HashMap<String, char>, acc: String, depth: usize, from_left: bool) {
+fn build_btree(node: Node, dict: &mut HashMap<Box<Vec<u8>>, char>, acc: Box<Vec<u8>>, depth: usize) {
     if node.left == None && node.right == None {
-        let mut bit  = 1;
-
-        if from_left {
-            bit = 0;
-        }
-
         //let key = format!("{}{}", acc, bit);
 
         dict.insert(acc, node.symbol.unwrap());
@@ -32,20 +26,27 @@ fn build_dict(node: Node, dict: &mut HashMap<String, char>, acc: String, depth: 
         let right = node.right.unwrap();
 
         if !node.is_root && depth > 0 {
-            build_dict(*left, dict, format!("{}{}", acc, 0), depth + 1, true);
-            build_dict(*right, dict, format!("{}{}", acc, 1), depth + 1, false);
-        } else {
-            build_dict(*left, dict, "0".to_string(), 1, true);
-            build_dict(*right, dict, "1".to_string(), 1, false);
-        }
+            let mut acc_left = *acc.clone();
+            acc_left.push(0);
 
+            let mut acc_rigth = *acc.clone();
+            acc_rigth.push(1);
+
+            build_btree(*left, dict, Box::new(acc_left), depth + 1);
+            build_btree(*right, dict, Box::new(acc_rigth), depth + 1);
+        } else {
+            let acc_left = Box::new(Vec::from([0]));
+            let acc_rigth = Box::new(Vec::from([1]));
+
+            build_btree(*left, dict, acc_left, 1);
+            build_btree(*right, dict, acc_rigth, 1);
+        }
     }
 }
 
 fn main() {
-    let data = BTreeMap::new();
+    let data = BTreeMap::<u16, char>::new();
 
-    data.get(key)
 
     let input_string = "AABBCDV dsad sad daaaaaaskm mmmf dkwqe qqwmm kmz z zm kmdask dmm ";
 
@@ -105,12 +106,13 @@ fn main() {
 
     let (root, _) = pq.pop().unwrap();
 
-    let mut dict = HashMap::<String, char>::new();
+    let mut dict = HashMap::<Box<Vec<u8>>, char>::new();
+    let acc = Box::new(Vec::new());
 
-    build_dict(root, &mut dict, String::new(), 0, true);
+    build_btree(root, &mut dict, acc, 0);
 
     for (k, v) in &dict {
-        println!("{}:{}", v, k);
+        println!("{}:{:?}", v, *k);
     }
 
     println!("HASH: {:?}", dict);
