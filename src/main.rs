@@ -108,7 +108,7 @@ fn main() {
     let mut compressed: Vec<u8> = Vec::new();
 
     for c in chars.clone() {
-        println!("{} -> {:?}", c, conversion_dict.get(&c.clone()));
+        //println!("{} -> {:?}", c, conversion_dict.get(&c.clone()));
         let comp = conversion_dict.get(&c.clone()).unwrap().clone();
 
         for d in comp {
@@ -139,8 +139,9 @@ fn main() {
             position += 1;
         }
         output.push(b);
-        println!("COMPRESSED CHUNK ({:08b}): {:?}", b, chunk);
+        //println!("COMPRESSED CHUNK ({:08b}): {:?}", b, chunk);
     }
 
+    println!("INPUT: {:?}", input_string.as_bytes());
     println!("OUTPUT: {:?}", output);
 }
