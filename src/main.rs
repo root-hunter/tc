@@ -24,9 +24,9 @@ fn build_dict(node: Node, dict: &mut HashMap<String, char>, acc: String, depth: 
             bit = 0;
         }
 
-        let key = format!("{}{}", acc, bit);
+        //let key = format!("{}{}", acc, bit);
 
-        dict.insert(key, node.symbol.unwrap());
+        dict.insert(acc, node.symbol.unwrap());
     } else {
         let left = node.left.unwrap();
         let right = node.right.unwrap();
@@ -43,6 +43,10 @@ fn build_dict(node: Node, dict: &mut HashMap<String, char>, acc: String, depth: 
 }
 
 fn main() {
+    let data = BTreeMap::new();
+
+    data.get(key)
+
     let input_string = "AABBCDV dsad sad daaaaaaskm mmmf dkwqe qqwmm kmz z zm kmdask dmm ";
 
     let chars = input_string.chars();
