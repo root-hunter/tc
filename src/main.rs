@@ -40,7 +40,7 @@ fn build_btree(node: Node, dict: &mut HashMap<char, Vec<u8>>, acc: Vec<u8>, dept
             let acc_left = Vec::from([0]);
             let acc_rigth = Vec::from([1]);
 
-            build_btree(*left, dict, acc_left, 0);
+            build_btree(*left, dict, acc_left,1);
             build_btree(*right, dict, acc_rigth, 1);
         }
 
@@ -48,7 +48,7 @@ fn build_btree(node: Node, dict: &mut HashMap<char, Vec<u8>>, acc: Vec<u8>, dept
 }
 
 fn find_symbol(node: Node, sequence: Vec<u8>, depth: usize) -> Option<char> {
-    println!("SEQ: {:?}", sequence);
+    //println!("SEQ: {:?}", sequence);
     // println!("ACC: {:?}", sequence);
     // println!("DEPTH: {:?}", depth);
     // println!("{:?}", node);
@@ -83,7 +83,7 @@ fn find_symbol(node: Node, sequence: Vec<u8>, depth: usize) -> Option<char> {
 fn main() {
     //let input_string = std::fs::read("/home/roothunter/Dev/tc/tests/inputs/input_5.txt").unwrap();
     //let input_string = String::from_utf8(input_string).unwrap();
-    let input_string = "AAAABBBBCCCCAAFAA";
+    let input_string = "Ciao a tutti questa è la mia prima decompressione, sembra funzionare tutto in modo super";
 
     let chars = input_string.chars();
 
@@ -198,12 +198,17 @@ fn main() {
     let mut output_string = String::new();
 
     for cc in compressed {
-        println!("C: {}", cc);
+        //println!("C: {}", cc);
         buffer.push(cc);
         if buffer.len() > 0 {
-            if let Some(char) = decompress_map.get(&buffer) {
-                println!("{:?} -> {}", buffer, *char);
-                output_string.push(*char);
+            // if let Some(char) = decompress_map.get(&buffer) {
+            //     println!("{:?} -> {}", buffer, *char);
+            //     output_string.push(*char);
+            //     buffer.clear();
+            // }
+
+            if let Some(char) = find_symbol(root.clone(), buffer.clone(), buffer.len()) {
+                output_string.push(char);
                 buffer.clear();
             }
         }
