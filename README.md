@@ -2,9 +2,7 @@
 **Text Compressor (TC)** is a Rust library designed for efficient text compression using **Huffman encoding**, a widely used lossless data compression algorithm. This library aims to provide developers with a lightweight, easy-to-integrate solution for compressing and decompressing textual data.
 
 <div style="text-align:center">
-
-![Huffman Encoding](https://upload.wikimedia.org/wikipedia/commons/8/82/Huffman_tree_2.svg)
-
+    <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Huffman_tree_2.svg"/>
 </div>
 
 ## Features
