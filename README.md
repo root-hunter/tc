@@ -30,7 +30,7 @@ Contributions, bug reports, and feature requests are welcome! Feel free to open 
 
 1) Clone the repository:
 ```sh
-git clone https://github.com/your-username/tc.git
+git clone https://github.com/root-hunter/tc.git
 ```
 2) Build the project:
 ```sh
