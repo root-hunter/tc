@@ -1,10 +1,11 @@
 use std::collections::HashMap;
 
+
 #[derive(
     serde::Serialize, serde::Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash,
 )]
 pub struct Node {
-    pub symbol: Option<char>,
+    pub symbol: Option<String>,
     pub left: Option<Box<Node>>,
     pub right: Option<Box<Node>>,
 
@@ -23,14 +24,7 @@ pub struct Data {
 }
 
 
-pub fn build_dict(node: Node, dict: &mut HashMap<char, Vec<u8>>, acc: Vec<u8>, depth: usize, is_root: bool) {
-    // println!("##########################################");
-    // if depth == 0 {
-    //     println!("ROOT: {:?}\nDEPTH: {}\nACC: {:?}\nMAP: {:?}",  node, depth, acc, dict);
-    // } else {
-    //     println!("NODE: {:?}\nDEPTH: {}\nACC: {:?}\nMAP: {:?}", node, depth, acc, dict);
-    // }
-    
+pub fn build_dict(node: Node, dict: &mut HashMap<String, Vec<u8>>, acc: Vec<u8>, depth: usize, is_root: bool) {
     if node.left == None && node.right == None && node.symbol.is_some() {
         dict.insert(node.symbol.unwrap(), acc.clone());
     } else {
@@ -38,10 +32,10 @@ pub fn build_dict(node: Node, dict: &mut HashMap<char, Vec<u8>>, acc: Vec<u8>, d
         let right = node.right.unwrap();
 
         if !is_root && depth > 0 {
-            let mut acc_left = Vec::from(acc.clone());
+            let mut acc_left = acc.clone();
             acc_left.push(0);
 
-            let mut acc_rigth = Vec::from(acc.clone());
+            let mut acc_rigth = acc.clone();
             acc_rigth.push(1);
 
             build_dict(*left, dict, acc_left, depth + 1, false);
@@ -57,7 +51,7 @@ pub fn build_dict(node: Node, dict: &mut HashMap<char, Vec<u8>>, acc: Vec<u8>, d
     }
 }
 
-pub fn find_symbol(dict: Node, sequence: Vec<u8>, depth: usize) -> Option<char> {
+pub fn find_symbol(dict: Node, sequence: Vec<u8>, depth: usize) -> Option<String> {
     //println!("SEQ: {:?}", sequence);
     // println!("ACC: {:?}", sequence);
     // println!("DEPTH: {:?}", depth);
