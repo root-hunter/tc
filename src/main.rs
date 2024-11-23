@@ -6,14 +6,26 @@ use std::collections::HashMap;
     serde::Serialize, serde::Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash,
 )]
 struct Node {
-    pub is_root: bool,
-    pub freq: usize,
     pub symbol: Option<char>,
     pub left: Option<Box<Node>>,
     pub right: Option<Box<Node>>,
+
+    #[serde(skip)]
+    pub freq: usize,
 }
 
-fn build_btree(node: Node, dict: &mut HashMap<char, Vec<u8>>, acc: Vec<u8>, depth: usize) {
+
+#[derive(
+    serde::Serialize, serde::Deserialize, Debug, Clone, PartialEq, Eq, PartialOrd, Ord, Hash,
+)]
+struct Data {
+    length: usize,
+    dict: Node,
+    data: Vec<u8>,
+}
+
+
+fn build_btree(node: Node, dict: &mut HashMap<char, Vec<u8>>, acc: Vec<u8>, depth: usize, is_root: bool) {
     println!("##########################################");
     if depth == 0 {
         println!("ROOT: {:?}\nDEPTH: {}\nACC: {:?}\nMAP: {:?}",  node, depth, acc, dict);
@@ -27,21 +39,21 @@ fn build_btree(node: Node, dict: &mut HashMap<char, Vec<u8>>, acc: Vec<u8>, dept
         let left = node.left.unwrap();
         let right = node.right.unwrap();
 
-        if !node.is_root && depth > 0 {
+        if !is_root && depth > 0 {
             let mut acc_left = Vec::from(acc.clone());
             acc_left.push(0);
 
             let mut acc_rigth = Vec::from(acc.clone());
             acc_rigth.push(1);
 
-            build_btree(*left, dict, acc_left, depth + 1);
-            build_btree(*right, dict, acc_rigth, depth + 1);
+            build_btree(*left, dict, acc_left, depth + 1, false);
+            build_btree(*right, dict, acc_rigth, depth + 1, false);
         } else {
             let acc_left = Vec::from([0]);
             let acc_rigth = Vec::from([1]);
 
-            build_btree(*left, dict, acc_left,1);
-            build_btree(*right, dict, acc_rigth, 1);
+            build_btree(*left, dict, acc_left,1, false);
+            build_btree(*right, dict, acc_rigth, 1, false);
         }
 
     }
@@ -83,7 +95,7 @@ fn find_symbol(node: Node, sequence: Vec<u8>, depth: usize) -> Option<char> {
 fn main() {
     //let input_string = std::fs::read("/home/roothunter/Dev/tc/tests/inputs/input_5.txt").unwrap();
     //let input_string = String::from_utf8(input_string).unwrap();
-    let input_string = "Ciao a tutti questa è la mia prima decompressione, sembra funzionare tutto in modo super!! 😎";
+    let input_string: &str = "Ciao a tutti questa è la mia prima decompressione, sembra funzionare tutto in modo super!! 😎";
 
     let chars = input_string.chars();
 
@@ -111,7 +123,6 @@ fn main() {
                 symbol: Some(k),
                 left: None,
                 right: None,
-                is_root: false,
             },
             Reverse(v),
         );
@@ -130,7 +141,6 @@ fn main() {
             symbol: None,
             left: Some(Box::new(left)),
             right: Some(Box::new(right)),
-            is_root: false,
         };
 
         pq.push(node, Reverse(freq));
@@ -138,14 +148,13 @@ fn main() {
 
     //println!("{:#?}", pq);
 
-    let (mut root, _) = pq.pop().unwrap();
-    root.is_root = true;
+    let (root, _) = pq.pop().unwrap();
     println!("{:?}", root);
 
     let mut conversion_dict = HashMap::<char, Vec<u8>>::new();
     let acc = Vec::new();
 
-    build_btree(root.clone(), &mut conversion_dict, acc, 0);
+    build_btree(root.clone(), &mut conversion_dict, acc, 0, true);
 
     println!("CONVERSION HASH: {:?}", conversion_dict);
 
@@ -166,6 +175,8 @@ fn main() {
     for (k, v) in conversion_dict {
         decompress_map.insert(v, k);
     }
+
+    let compressed_len = compressed.len();
 
     println!("COMPRESSED: {:?}", compressed);
     println!("ORIGINAL LENGTH: {}", chars.count());
@@ -193,10 +204,37 @@ fn main() {
     }
 
     let mut buffer = Vec::<u8>::new();
-
     let mut output_string = String::new();
 
-    for cc in compressed {
+    let mut bits = Vec::with_capacity(compressed_len);
+
+    let mut k = 0;
+    let mut end = false;
+    for byte in output.clone() {
+        for i in (0..8).rev() { 
+            bits.push((byte >> i) & 1);
+
+            k += 1;
+
+            if k >= compressed_len {
+                end = true;
+                break;
+            }
+        }
+
+        if end {
+            break;
+        }
+    }
+
+    println!("BITS: {:?}", bits);
+    println!("COMPRESSED LEN: {}", compressed.len());
+    println!("BITS LEN: {}", bits.len());
+
+    assert_eq!(compressed.len(), bits.len());
+    assert_eq!(compressed, bits);
+
+    for cc in bits.clone() {
         //println!("C: {}", cc);
         buffer.push(cc);
         if buffer.len() > 0 {
@@ -212,4 +250,17 @@ fn main() {
 
     println!("INPUT: {:?}", input_string.as_bytes());
     println!("OUTPUT: {:?}", output);
+
+    assert_eq!(input_string, output_string);
+
+    let export_data = Data{
+        length: compressed_len,
+        dict: root,
+        data: output
+    };
+
+    let json_string = serde_json::to_string(&export_data).unwrap();
+    let bytes = bincode::serialize(&export_data).unwrap();
+
+    std::fs::write("data.tc", &bytes).expect("Unable to write file");
 }
