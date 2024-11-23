@@ -83,7 +83,7 @@ fn find_symbol(node: Node, sequence: Vec<u8>, depth: usize) -> Option<char> {
 fn main() {
     //let input_string = std::fs::read("/home/roothunter/Dev/tc/tests/inputs/input_5.txt").unwrap();
     //let input_string = String::from_utf8(input_string).unwrap();
-    let input_string = "Ciao a tutti questa è la mia prima decompressione, sembra funzionare tutto in modo super";
+    let input_string = "Ciao a tutti questa è la mia prima decompressione, sembra funzionare tutto in modo super!! 😎";
 
     let chars = input_string.chars();
 
@@ -192,7 +192,6 @@ fn main() {
         //println!("COMPRESSED CHUNK ({:08b}): {:?}", b, chunk);
     }
 
-    let mut decompressed = String::new();
     let mut buffer = Vec::<u8>::new();
 
     let mut output_string = String::new();
@@ -201,12 +200,6 @@ fn main() {
         //println!("C: {}", cc);
         buffer.push(cc);
         if buffer.len() > 0 {
-            // if let Some(char) = decompress_map.get(&buffer) {
-            //     println!("{:?} -> {}", buffer, *char);
-            //     output_string.push(*char);
-            //     buffer.clear();
-            // }
-
             if let Some(char) = find_symbol(root.clone(), buffer.clone(), buffer.len()) {
                 output_string.push(char);
                 buffer.clear();
@@ -215,7 +208,7 @@ fn main() {
     }
 
 
-    println!("OUTPUT STRING: {}", output_string);
+    println!("DECOMPRESSED STRING: {}", output_string);
 
     println!("INPUT: {:?}", input_string.as_bytes());
     println!("OUTPUT: {:?}", output);
