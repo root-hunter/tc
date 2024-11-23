@@ -59,7 +59,9 @@ pub fn find_symbol(dict: Node, sequence: Vec<u8>, depth: usize) -> Option<String
 
     if depth == 0 {
         if dict.symbol.is_some() {
-            return Some(dict.symbol.unwrap());
+            let symbol = dict.symbol.unwrap();
+            //println!("FIND {:?}", symbol);
+            return Some(symbol);
         } else {
             return None;
         }

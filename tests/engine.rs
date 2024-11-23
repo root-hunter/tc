@@ -58,7 +58,7 @@ mod tests {
 
     #[test]
     fn test_2() {
-        let original_path = "./tests/inputs/input_1.txt";
+        let original_path = "./tests/inputs/input_2.txt";
         let compressed_path = "./tests/tmp/compressed_2.tc";
         let decompressed_path = "./tests/tmp/decompressed_2.tc";
 
@@ -69,7 +69,7 @@ mod tests {
 
     #[test]
     fn test_3() {
-        let original_path = "./tests/inputs/input_2.txt";
+        let original_path = "./tests/inputs/input_3.txt";
         let compressed_path = "./tests/tmp/compressed_3.tc";
         let decompressed_path = "./tests/tmp/decompressed_3.tc";
 
@@ -80,7 +80,7 @@ mod tests {
 
     #[test]
     fn test_4() {
-        let original_path = "./tests/inputs/input_3.txt";
+        let original_path = "./tests/inputs/input_4.txt";
         let compressed_path = "./tests/tmp/compressed_4.tc";
         let decompressed_path = "./tests/tmp/decompressed_4.tc";
 
@@ -91,7 +91,7 @@ mod tests {
 
     #[test]
     fn test_5() {
-        let original_path = "./tests/inputs/input_4.txt";
+        let original_path = "./tests/inputs/input_5.txt";
         let compressed_path = "./tests/tmp/compressed_5.tc";
         let decompressed_path = "./tests/tmp/decompressed_5.tc";
 
@@ -102,7 +102,7 @@ mod tests {
 
     #[test]
     fn test_6() {
-        let original_path = "./tests/inputs/input_5.txt";
+        let original_path = "./tests/inputs/input_6.txt";
         let compressed_path = "./tests/tmp/compressed_6.tc";
         let decompressed_path = "./tests/tmp/decompressed_6.tc";
 
@@ -117,7 +117,7 @@ mod tests {
         let compressed_path = "./tests/tmp/compressed_7.tc";
         let decompressed_path = "./tests/tmp/decompressed_7.tc";
 
-        println!("Start TEST 6");
+        println!("Start TEST 7");
 
         test_file(original_path, compressed_path, decompressed_path);
     }

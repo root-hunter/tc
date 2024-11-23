@@ -1,24 +1,25 @@
-use std::{cmp::Reverse, collections::HashMap};
 use regex::Regex;
+use std::{cmp::Reverse, collections::HashMap};
 
 use engine::core::{build_dict, find_symbol, Data, Node};
 use priority_queue::PriorityQueue;
 
 const SEPARATORS: &[char] = &[
-    '^', ' ', '\n', '\t', ':', '.', ',', '?', '!', '|', '<', '>', '{', '}', '(', ')', '"', '\'',
-    '\\', '/', '&',
+    ' ', '\n', '\t', '.', ',', '?', '|', '!', ':', ';', '-', '_', '(', ')', '[', ']', '{', '}',
+    '/', '%', '$', '<', '>', '+', '*', '^', '\'', '"',
 ];
+
+// const SEPARATORS: &[char] = &[
+//     ' '
+// ];
 
 pub mod engine {
     pub mod core;
 }
 
 pub fn compress(input_string: String) -> Data {
-    let chars = input_string.chars();
-
-    let mut distribution = HashMap::<String, usize>::new();
-
-    let reg_word_pattern = r#"^([^ \n\t:.,?|!:;\-_\(\)\[\]\{\}\/%$<>+*\^'"]{2,})$"#;
+    let reg_word_pattern = r#"^([^ \n\t\.\,\?\|\!\:\;\-\_\(\)\[\]\{\}\/\%\$<>+\*\^\'\"]{2,128})$"#;
+    //let reg_word_pattern = r#"^([^ "]{1,128})$"#;
     let reg_word = Regex::new(reg_word_pattern).unwrap();
 
     let mut distribution: HashMap<String, usize> = HashMap::new();
@@ -26,9 +27,12 @@ pub fn compress(input_string: String) -> Data {
     let chars = input_string.chars();
     let mut buffer = String::new();
 
-    for ch in chars {
-        if SEPARATORS.contains(&ch) {
-          if buffer.len() > 0 {
+    let mut i = 0;
+    let chars_count = chars.clone().count();
+
+    for ch in chars.clone() {
+        if SEPARATORS.contains(&ch) || i == chars_count - 1 {
+            if !buffer.is_empty() {
                 if reg_word.is_match(&buffer) {
                     if let Some(elem) = distribution.get_mut(&buffer) {
                         *elem += 1;
@@ -38,7 +42,7 @@ pub fn compress(input_string: String) -> Data {
                 } else {
                     for x in buffer.chars() {
                         let x = String::from(x);
-                        if let Some(elem) = distribution.get_mut(&x) {
+                        if let Some(elem) = distribution.get_mut(&x.clone()) {
                             *elem += 1;
                         } else {
                             distribution.insert(x.clone(), 1);
@@ -48,31 +52,35 @@ pub fn compress(input_string: String) -> Data {
                 buffer.clear();
             }
 
-            let ch_str = String::from(ch);
-            if let Some(elem) = distribution.get_mut(&ch_str) {
-                *elem += 1;
-            } else {
-                distribution.insert(ch_str.clone(), 1);
+            if SEPARATORS.contains(&ch) {
+                let ch_str = String::from(ch);
+                if let Some(elem) = distribution.get_mut(&ch_str) {
+                    *elem += 1;
+                } else {
+                    distribution.insert(ch_str.clone(), 1);
+                }
             }
         } else {
             buffer.push(ch);
         }
+
+        i += 1;
     }
 
-    for (k, v) in distribution.clone() {
-      if v < 3 {
-        for ch in k.chars() {
-          let ch_str = String::from(ch);
-          if let Some(elem) = distribution.get_mut(&ch_str) {
-              *elem += 1;
-          } else {
-              distribution.insert(ch_str.clone(), 1);
-          }
-        }
-        
-        distribution.remove(&k).unwrap();
-      }
-    }
+    // for (k, v) in distribution.clone() {
+    //     if k.len() > 2 && v < 3 {
+    //         for ch in k.chars() {
+    //             let ch_str = String::from(ch);
+    //             if let Some(elem) = distribution.get_mut(&ch_str) {
+    //                 *elem += 1;
+    //             } else {
+    //                 distribution.insert(ch_str.clone(), 1);
+    //             }
+    //         }
+
+    //         distribution.remove(&k).unwrap();
+    //     }
+    // }
 
     //println!("DIST: {:?}", distribution);
 
@@ -113,52 +121,74 @@ pub fn compress(input_string: String) -> Data {
     let (root, _) = pq.pop().unwrap();
     println!("{:?}", root);
 
-    // let mut conversion_dict = HashMap::<String, Vec<u8>>::new();
-    // let acc = Vec::new();
+    let mut conversion_dict = HashMap::<String, Vec<u8>>::new();
+    let acc = Vec::new();
 
-    // build_dict(root.clone(), &mut conversion_dict, acc, 0, true);
-    // let mut compressed: Vec<u8> = Vec::new();
+    build_dict(root.clone(), &mut conversion_dict, acc, 0, true);
 
-    // for c in chars.clone() {
-    //     //println!("{} -> {:?}", c, conversion_dict.get(&c.clone()));
-    //     let comp = conversion_dict.get(&c.clone()).unwrap().clone();
+    for (k, v) in conversion_dict.clone() {
+        println!("{:?}: {:?}", k, v);
+    }
 
-    //     for d in comp {
-    //         compressed.push(d);
-    //     }
-    // }
-    // let compressed_len = compressed.len();
+    let mut compressed: Vec<u8> = Vec::new();
+    let mut buffer = String::new();
 
-    // let chunks = compressed.chunks(8);
+    for ch in chars.clone() {
+        if SEPARATORS.contains(&ch) {
+            let ch_string = String::from(ch);
+            if buffer.len() > 0 {
+                if conversion_dict.contains_key(&buffer) {
+                    let bits = conversion_dict.get(&buffer).unwrap();
+                    for bit in bits {
+                        compressed.push(bit.clone());
+                    }
+                    buffer.clear();
+                }
+            }
 
-    // let mut output: Vec<u8> = Vec::new();
+            let bits = conversion_dict.get(&ch_string).unwrap();
 
-    // for chunk in chunks {
-    //     let mut b: u8 = 0x00;
+            for bit in bits {
+                compressed.push(bit.clone());
+            }
+        } else {
+            buffer.push(ch);
+        }
+    }
+    let compressed_len = compressed.len();
 
-    //     let mut position: usize = 0;
-    //     for bit in chunk {
-    //         if *bit == 1 {
-    //             b = b | 1 << 7 - position;
-    //         } else {
-    //             b = b | 0 << 7 - position;
-    //         }
+    println!("COMPRESSED LEN: {}", compressed_len / 8);
 
-    //         position += 1;
-    //     }
-    //     output.push(b);
-    //     //println!("COMPRESSED CHUNK ({:08b}): {:?}", b, chunk);
-    // }
+    let chunks = compressed.chunks(8);
 
-    return Data{
-        length: 0,
+    let mut output: Vec<u8> = Vec::new();
+
+    for chunk in chunks {
+        let mut b: u8 = 0x00;
+
+        let mut position: usize = 0;
+        for bit in chunk {
+            if *bit == 1 {
+                b = b | 1 << 7 - position;
+            } else {
+                b = b | 0 << 7 - position;
+            }
+
+            position += 1;
+        }
+        output.push(b);
+        //println!("COMPRESSED CHUNK ({:08b}): {:?}", b, chunk);
+    }
+
+    return Data {
+        length: compressed_len,
         dict: root,
-        data: Vec::new()
+        data: output,
     };
 }
 
-pub fn compress_file(file_path: &str, output_path: &str) -> Result<(), ()>{
-    if let Ok(file_data) = std::fs::read(file_path){
+pub fn compress_file(file_path: &str, output_path: &str) -> Result<(), ()> {
+    if let Ok(file_data) = std::fs::read(file_path) {
         let input_string = String::from_utf8(file_data).unwrap();
 
         let data = compress(input_string);
@@ -180,7 +210,7 @@ pub fn decompress(data: Data) -> String {
     let mut k = 0;
     let mut end = false;
     for byte in data.data {
-        for i in (0..8).rev() { 
+        for i in (0..8).rev() {
             bits.push((byte >> i) & 1);
 
             k += 1;
@@ -198,13 +228,14 @@ pub fn decompress(data: Data) -> String {
 
     let mut buffer = Vec::<u8>::new();
     let mut output_string = String::new();
-    
+
     for cc in bits.clone() {
         //println!("C: {}", cc);
         buffer.push(cc);
         if buffer.len() > 0 {
-            if let Some(char) = find_symbol(data.dict.clone(), buffer.clone(), buffer.len()) {
-                output_string.push(char);
+            if let Some(token) = find_symbol(data.dict.clone(), buffer.clone(), buffer.len()) {
+                output_string.push_str(&token);
+                //println!("{:?}", token);
                 buffer.clear();
             }
         }
@@ -213,7 +244,7 @@ pub fn decompress(data: Data) -> String {
     return output_string;
 }
 
-pub fn decompress_file(file_path: &str, output_path: &str) -> Result<(), ()>{
+pub fn decompress_file(file_path: &str, output_path: &str) -> Result<(), ()> {
     if let Ok(file_data) = std::fs::read(file_path) {
         let data = bincode::deserialize(&file_data).unwrap();
         let data = decompress(data);
@@ -222,7 +253,7 @@ pub fn decompress_file(file_path: &str, output_path: &str) -> Result<(), ()>{
             Ok(())
         } else {
             Err(())
-        }      
+        }
     } else {
         Err(())
     }
