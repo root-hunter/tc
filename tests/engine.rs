@@ -44,16 +44,13 @@ mod tests {
 
     #[test]
     fn test_1() {
-        let test_path = "./tests/inputs/input_1.txt";
+        let original_path = "./tests/inputs/input_1.txt";
         let compressed_path = "./tests/tmp/compressed_1.tc";
+        let decompressed_path = "./tests/tmp/decompressed_1.tc";
 
         println!("Start TEST 1");
 
-        tc::compress_file(test_path, compressed_path).unwrap();
-        let test = std::fs::read(test_path).unwrap();
-        let compressed = std::fs::read(compressed_path).unwrap();
-
-        assert!(compressed.len() < test.len());
+        test_file(original_path, compressed_path, decompressed_path);
     }
 
     #[test]

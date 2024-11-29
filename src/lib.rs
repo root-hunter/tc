@@ -133,10 +133,14 @@ pub fn compress(input_string: String) -> Data {
     let mut compressed: Vec<u8> = Vec::new();
     let mut buffer = String::new();
 
+
+    let mut i = 0;
     for ch in chars.clone() {
-        if SEPARATORS.contains(&ch) {
+        if SEPARATORS.contains(&ch) || i == chars_count - 1 {
+           
+            
             let ch_string = String::from(ch);
-            if buffer.len() > 0 {
+            if !buffer.is_empty() {
                 if conversion_dict.contains_key(&buffer) {
                     let bits = conversion_dict.get(&buffer).unwrap();
                     for bit in bits {
@@ -146,14 +150,18 @@ pub fn compress(input_string: String) -> Data {
                 }
             }
 
-            let bits = conversion_dict.get(&ch_string).unwrap();
+            if SEPARATORS.contains(&ch) {
+                let bits = conversion_dict.get(&ch_string).unwrap();
 
-            for bit in bits {
-                compressed.push(bit.clone());
+                for bit in bits {
+                    compressed.push(bit.clone());
+                }
             }
         } else {
             buffer.push(ch);
         }
+
+        i += 1;
     }
     let compressed_len = compressed.len();
 
